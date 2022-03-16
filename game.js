@@ -18,19 +18,27 @@ function buyMiner(){
     document.getElementById('minerCost').innerHTML = nextCost;  //updates the miner cost for the user
 };
 
-//window.setInterval(function(){
-  //rockClick(miners);
-//}, 1000);
+//
 
-last_update_time = new Date();
+let last_time = null;
+let total_time = 0;
+setInterval(function gameLoop() {
+  const current_time = Date.now();
+  if (last_time === null) {
+    last_time = current_time;
+  }
+  const delta_time = current_time - last_time;
+  total_time += delta_time;
+  last_time = current_time;
+  updateMyGame(delta_time, total_time);
+}, 1000 / 60);
 
+// calculate starting currency based on total_time and rates
 
-function update(){
-	
-	var curtime = new Date();
-	delta_ms = curtime.getTime() - last_update_time.getTime();
-	last_update_time.setTime(curtime.getTime());
-	
-	rocks += rps * global_mult * (delta_ms / 1000);
-	//total_goomies += gps * global_mult * (delta_ms / 1000);
-};
+const currency_display = document.getElementById("rocks")
+let miner_rate_per_second = 1;
+
+function updateMyGame(delta_time, total_time) {
+  rocks += ((miners * miner_rate_per_second) / 1000) * delta_time;
+  currency_display.textContent = rocks.toFixed(2);
+}
